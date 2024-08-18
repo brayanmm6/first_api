@@ -10,7 +10,10 @@ async function connect () {
     const { Pool } = require("pg")
     
     const pool = new Pool ({
-        connectionString: process.env.CONNECTION_STRING
+        connectionString: process.env.CLOUD_CONNECTION_STRING,
+        ssl : {
+            rejectUnauthorized: false
+        }
     })
 
     const client = await pool.connect()
@@ -31,31 +34,29 @@ const dbOperation = async (sql, target) => {
 }
 
 async function newTask ({...infos}) {
-    const res = await dbOperation("INSERT INTO list (title, description, completed) VALUES ($1, $2, $3)", [infos.title, infos.description, infos.completed])
+    const res = await dbOperation("INSERT INTO tasks (title, description) VALUES ($1, $2)", [infos.title, infos.description])
     return res.rows
 }
 
 async function deletTask (id) {
-    const res = await dbOperation("DELETE FROM list WHERE id = $1", [id])
+    const res = await dbOperation("DELETE FROM tasks WHERE id = $1", [id])
     return res.rows
 }
 
 async function editTask (id, {...target}) {
-    target.title && await dbOperation("UPDATE list SET title = $1 WHERE id = $2", [target.title, id])
-    target.description && await dbOperation("UPDATE list SET description = $1 WHERE id = $2", [target.description, id])
+    target.title && await dbOperation("UPDATE tasks SET tasks = $1 WHERE id = $2", [target.title, id])
+    target.description && await dbOperation("UPDATE tasks SET description = $1 WHERE id = $2", [target.description, id])
 }
 
 async function finishTask (id) {
-    const res = await dbOperation("UPDATE list SET completed = true WHERE id = $1", [id])
+    const res = await dbOperation("UPDATE tasks SET completed = true WHERE id = $1", [id])
     return res
 }
 
 async function showTasks () {
-    const res = await dbOperation("SELECT * FROM list")
+    const res = await dbOperation("SELECT * FROM tasks")
     return res.rows
 }
-
-showTasks()
 
 module.exports = {
     newTask,
