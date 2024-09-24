@@ -11,9 +11,9 @@ async function connect () {
     
     const pool = new Pool ({
         connectionString: process.env.CLOUD_CONNECTION_STRING,
-        ssl : {
-            rejectUnauthorized: false
-        }
+        // ssl : {
+        //     rejectUnauthorized: false
+        // }
     })
 
     const client = await pool.connect()
