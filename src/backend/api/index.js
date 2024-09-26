@@ -24,7 +24,7 @@ async function connect () {
 
     global.connection = pool
 
-    return await pool.end()
+    return await pool.connect().then(pool.end())
 }
 
 const dbOperation = async (sql, target) => {
