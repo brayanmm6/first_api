@@ -3,9 +3,9 @@ require("dotenv").config()
 const port = process.env.PORT
 
 async function connect () {
-    if(global.connection){
-        return await global.connection.connect()
-    }
+    // if(global.connection){
+    //     return await global.connection.connect()
+    // }
 
     const { Pool } = require("pg")
     
@@ -24,7 +24,7 @@ async function connect () {
 
     global.connection = pool
 
-    return await pool.connect().then(pool.end())
+    return await pool.connect()
 }
 
 const dbOperation = async (sql, target) => {
